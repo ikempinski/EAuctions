@@ -1,0 +1,2 @@
+# If .gitmodules exists and contains 'frontend', remove that entry or delete the file
+if (Test-Path .gitmodules) { notepad .gitmodules }  # remove the 'frontend' section and save
