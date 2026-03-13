@@ -1,0 +1,50 @@
+<section class="account-section">
+  <h2>Moje aukcje</h2>
+  <div *ngIf="myAuctionsLoading" class="spinner-container">
+    <span class="spinner-cog"></span>
+  </div>
+  <div class="ok-message" *ngIf="okMessage">{{ okMessage }}</div>
+  <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <!-- Always render the list; spinner just overlays while loading -->
+  <ul class="auction-list">
+    <li *ngFor="let a of myAuctions" class="auction-item">
+      <div class="auction-item-inner">
+        <img
+          *ngIf="a.photoName"
+          class="auction-photo"
+          [src]="'/api/auction/photo/' + a.photoName"
+          [alt]="a.title"
+        />
+        <div class="auction-info">
+          <div class="auction-title"><strong>Tytuł:</strong> {{ a.title }}</div>
+          <div class="auction-end-date"><strong>Zakończenie:</strong> {{ a.endDate | date: 'short' }}</div>
+          <div class="auction-start-price"><strong>Cena wywoławcza:</strong> {{ a.startPrice }} zł</div>
+          <div class="auction-current-price">
+            <strong>Aktualna cena:</strong> {{ getCurrentPrice(a) }} zł
+          </div>
+          <div class="auction-highest-bidder">
+            <span
+              *ngIf="a.currentBid != null && a.currentBid !== a.startPrice && a.highestBidderUsername">
+              <strong>Najwyższa oferta od:</strong> {{ a.highestBidderUsername }}
+            </span>
+          </div>
+          <div class="auction-actions">
+            <button type="button" class="btn btn-danger" (click)="deleteAuction(a)">Usuń</button>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+  <p class="account-placeholder" *ngIf="myAuctions.length === 0 && !myAuctionsLoading">
+    Brak aukcji. Dodaj pierwszą aukcję.
+  </p>
+  <button type="button" class="btn btn-primary" (click)="openAuctionModal()">Dodaj aukcję</button>
+</section>
+
+<app-add-auction-modal
+  *ngIf="showAuctionModal"
+  (close)="closeAuctionModal()"
+  (save)="createAuction($event)">
+</app-add-auction-modal>

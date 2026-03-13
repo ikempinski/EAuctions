@@ -1,0 +1,136 @@
+<section class="account-section guest-section">
+  <h2>Dostępne aukcje</h2>
+
+  <div class="guest-filters">
+    <input
+      type="text"
+      class="guest-search"
+      placeholder="Szukaj po tytule..."
+      [ngModel]="searchTerm"
+      (ngModelChange)="onSearchChange($event)"
+    />
+
+    <select class="guest-sort" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
+      <option value="endDate">Data zakończenia</option>
+      <option value="startPrice">Cena wywoławcza</option>
+      <option value="currentBid">Aktualna stawka</option>
+    </select>
+
+    <select class="guest-sort" [ngModel]="sortDirection" (ngModelChange)="onDirectionChange($event)">
+      <option value="asc">Rosnąco</option>
+      <option value="desc">Malejąco</option>
+    </select>
+  </div>
+
+  <div class="guest-auction-grid">
+    <article *ngFor="let a of filteredAuctions" class="guest-auction-card">
+      <div class="guest-auction-image-wrapper" *ngIf="a.photoName">
+        <img
+          class="guest-auction-image"
+          [src]="'/api/auction/photo/' + a.photoName"
+          [alt]="a.title"
+          (click)="openPhoto(a.photoName)"
+          style="cursor: pointer"
+        />
+      </div>
+      <div class="guest-auction-content">
+        <h3 class="guest-auction-title">
+          {{ a.title }}
+          <span
+            *ngIf="currentUsername && a.ownerUsername === currentUsername"
+            class="guest-own-label">
+            Twoja aukcja
+          </span>
+        </h3>
+        <div *ngIf="canBid(a); else ownerAuctionInfo" class="row">
+          <div class="col-md-6">
+            <p class="guest-auction-row">
+              <span class="label">Zakończenie:</span>
+              <span class="value">{{ a.endDate | date: 'short' }}</span>
+            </p>
+            <p class="guest-auction-row">
+              <span class="label">Cena wywoławcza:</span>
+              <span class="value">{{ a.startPrice }} zł</span>
+            </p>
+            <p class="guest-auction-row">
+              <span class="label">Aktualna cena:</span>
+              <span class="value">
+                {{ getCurrentPrice(a) }} zł
+                <span
+                  *ngIf="a.myCurrentBid"
+                  class="guest-own-label"
+                  style="margin-left: 0.5rem">Twoja oferta</span
+                >
+              </span>
+            </p>
+            <p class="guest-auction-row">
+              <span class="label">Sprzedający:</span>
+              <span class="value">{{ a.ownerUsername }}</span>
+            </p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <div class="guest-auction-row guest-bid-row">
+              <span class="label">Twoja oferta:</span>
+              <span class="value">
+                <input
+                  type="number"
+                  min="0"
+                  class="guest-bid-input"
+                  [(ngModel)]="bidInputs[a.id]"
+                  [disabled]="placingBidForId === a.id"
+                />
+                <button
+                  type="button"
+                  class="guest-bid-button"
+                  (click)="placeBid(a)"
+                  [disabled]="placingBidForId === a.id"
+                >
+                  Licytuj
+                </button>
+              </span>
+            </div>
+            <div class="error-message" *ngIf="bidErrors[a.id]">{{ bidErrors[a.id] }}</div>
+          </div>
+        </div>
+
+        <ng-template #ownerAuctionInfo>
+          <div>
+            <p class="guest-auction-row">
+              <span class="label">Zakończenie:</span>
+              <span class="value">{{ a.endDate | date: 'short' }}</span>
+            </p>
+            <p class="guest-auction-row">
+              <span class="label">Cena wywoławcza:</span>
+              <span class="value">{{ a.startPrice }} zł</span>
+            </p>
+            <p class="guest-auction-row">
+              <span class="label">Aktualna cena:</span>
+              <span class="value">{{ getCurrentPrice(a) }} zł</span>
+            </p>
+            <p class="guest-auction-row">
+              <span class="label">Sprzedający:</span>
+              <span class="value">{{ a.ownerUsername }}</span>
+            </p>
+          </div>
+        </ng-template>
+      </div>
+    </article>
+  </div>
+
+  <p class="account-placeholder" *ngIf="filteredAuctions.length === 0">
+    Brak aukcji spełniających kryteria.
+  </p>
+</section>
+
+<!-- Podgląd zdjęcia w powiększeniu -->
+<div class="modal-overlay" *ngIf="previewPhotoName" (click)="closePhoto()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <img
+      [src]="'/api/auction/photo/' + previewPhotoName"
+      alt="Podgląd zdjęcia"
+      style="width: 100%; height: 100%; object-fit: contain; display: block; margin: 0 auto;"
+    />
+  </div>
+</div>
+
+

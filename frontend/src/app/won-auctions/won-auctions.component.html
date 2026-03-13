@@ -1,0 +1,7 @@
+<section class="account-section">
+  <h2>Wygrane aukcje</h2>
+  <p class="account-placeholder" *ngIf="!wonAuctions.length">Brak wygranych aukcji.</p>
+  <ul class="auction-list" *ngIf="wonAuctions.length">
+    <li *ngFor="let a of wonAuctions">{{ a.title }} – {{ a.finalPrice }} zł</li>
+  </ul>
+</section>

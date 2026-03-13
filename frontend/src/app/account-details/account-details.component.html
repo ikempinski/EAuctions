@@ -1,0 +1,74 @@
+<section class="account-section">
+  <h2>Dane użytkownika</h2>
+  <div class="ok-message" *ngIf="okMessage">{{ okMessage }}</div>
+  <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <form (ngSubmit)="saveProfile()" #profileForm="ngForm">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        name="email"
+        [(ngModel)]="userEdit.email"
+        required
+        email
+        placeholder="twoj@email.pl"
+      />
+    </div>
+    <div class="form-group">
+      <label for="username">Nazwa użytkownika</label>
+      <input
+        id="username"
+        type="text"
+        name="username"
+        [(ngModel)]="userEdit.username"
+        required
+        minlength="3"
+        placeholder="jan_kowalski"
+      />
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="!profileForm.valid">Zapisz zmiany</button>
+  </form>
+
+  <hr />
+
+  <h2>Zmiana hasła</h2>
+  <form (ngSubmit)="changePassword()" #passwordFormRef="ngForm">
+    <div class="form-group">
+      <label for="oldPassword">Obecne hasło</label>
+      <input
+        id="oldPassword"
+        type="password"
+        name="oldPassword"
+        [(ngModel)]="passwordForm.oldPassword"
+        required
+        minlength="6"
+      />
+    </div>
+    <div class="form-group">
+      <label for="newPassword">Nowe hasło</label>
+      <input
+        id="newPassword"
+        type="password"
+        name="newPassword"
+        [(ngModel)]="passwordForm.newPassword"
+        required
+        minlength="6"
+      />
+    </div>
+    <div class="form-group">
+      <label for="confirmPassword">Powtórz nowe hasło</label>
+      <input
+        id="confirmPassword"
+        type="password"
+        name="confirmPassword"
+        [(ngModel)]="passwordForm.confirmPassword"
+        required
+        minlength="6"
+      />
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="!passwordFormRef.valid">
+      Zmień hasło
+    </button>
+  </form>
+</section>

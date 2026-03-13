@@ -1,0 +1,537 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+/* Color palette & typography */
+:root {
+  --color-primary: #1E3A8A;   /* Dark Navy */
+  --color-accent: #F97316;    /* Gold */
+  --color-background: #f8fafc;
+  --color-text: #0f172a;
+  --font-heading: 'Poppins', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+/* Base */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+main {
+  margin: 0;
+  padding: 0;
+}
+
+/* Navbar */
+app-navbar .navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-primary);
+  color: var(--color-background);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+app-navbar .logo {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-background);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+
+  &:hover {
+    color: var(--color-accent);
+  }
+}
+
+app-navbar .logo-image {
+  width: 2.5rem;
+  height: 2.5rem;
+  vertical-align: middle;
+  object-fit: contain;
+}
+
+app-navbar .nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn.btn-primary {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: var(--color-accent);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--color-text);
+
+  &:hover {
+    filter: brightness(1.1);
+  }
+}
+
+/* Auth panels (login / register) */
+.auth-panel {
+  max-width: 22rem;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  h1 {
+    margin: 0 0 1.5rem;
+    font-size: 1.5rem;
+    color: var(--color-primary);
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    input {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      font-size: 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      box-sizing: border-box;
+
+      &::placeholder {
+        color: #94a3b8;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+      }
+    }
+  }
+
+  .btn {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.65rem 1.25rem;
+  }
+
+  .auth-switch {
+    margin: 1.25rem 0 0;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    text-align: center;
+
+    a {
+      color: var(--color-accent);
+      text-decoration: none;
+      font-weight: 600;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .ok-message {
+    color: #0f172a;
+    background-color: #86efac;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+  }
+
+  textarea {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    box-sizing: border-box;
+    resize: vertical;
+    font-family: inherit;
+  }
+}
+
+/* Global error message style so it also applies in guest view, my auctions, etc. */
+.error-message {
+  color: rgb(0, 0, 0);
+  background-color: #f45858;
+  font-size: 0.95rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 4px;
+  margin-top: 0.25rem;
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.auth-panel.account-panel {
+  max-width: 28rem;
+
+  .btn { width: auto; }
+}
+
+.account-nav {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.75rem;
+
+  .account-nav-item {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    text-decoration: none;
+    border-radius: 6px;
+
+    &:hover {
+      background: #f1f5f9;
+      color: var(--color-primary);
+    }
+
+    &.active {
+      background: var(--color-primary);
+      color: #fff;
+    }
+  }
+}
+
+.account-section {
+  margin-bottom: 1.5rem;
+
+  h2 {
+    font-size: 1.1rem;
+    color: var(--color-primary);
+    margin: 0 0 0.75rem;
+  }
+}
+
+.account-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  font-size: 0.95rem;
+
+  .label { color: var(--color-text); opacity: 0.9; }
+  .value { font-weight: 500; }
+}
+
+.account-placeholder {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 0 0 0.75rem;
+}
+
+.auction-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+
+  li {
+    padding: 0.35rem 0;
+    border-bottom: 1px solid #f1f5f9;
+
+    .auction-item-inner {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .auction-photo {
+      width: 96px;
+      height: 96px;
+      object-fit: cover;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .auction-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
+}
+
+.guest-section {
+  padding: 0 1.5rem;
+
+  h2 {
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    text-align: center;
+  }
+}
+
+/* Guest view */
+.guest-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+
+  .guest-search {
+    flex: 1 1 200px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    font-size: 0.95rem;
+  }
+
+  .guest-sort {
+    flex: 0 0 220px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    font-size: 0.95rem;
+    background-color: #fff;
+  }
+}
+
+.guest-auction-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.guest-auction-card {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+.guest-auction-image-wrapper {
+  flex-shrink: 0;
+}
+
+.guest-auction-image {
+  width: 112px;
+  height: 112px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.guest-auction-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.guest-auction-title {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.guest-own-label {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background-color: #22c55e;
+  color: #0f172a;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+
+
+.guest-auction-row {
+  display: flex;
+  align-items: center;
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+
+  .label {
+    font-weight: 500;
+    margin-right: 0.5rem;
+    min-width: 90px;
+    color: var(--color-text);
+    opacity: 0.9;
+  }
+
+  .value {
+    font-weight: 500;
+  }
+}
+
+.guest-bid-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .label {
+    min-width: 90px;
+  }
+
+  .value {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+.guest-bid-input {
+  padding: 0.25rem 0.4rem;
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.85rem;
+  width: 90px;
+}
+
+.guest-bid-button {
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  border: none;
+  background-color: var(--color-accent);
+  color: #0f172a;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.guest-bid-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Simple spinner used in my-auctions */
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  margin: 0.5rem 0 1rem;
+}
+
+.spinner-cog {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 3px solid #e2e8f0;
+  border-top-color: var(--color-accent);
+  animation: spinner-rotate 0.6s linear infinite;
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  max-width: 24rem;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--color-primary);
+  }
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #64748b;
+  padding: 0.25rem;
+
+  &:hover {
+    color: var(--color-text);
+  }
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+
+  .btn { width: auto; }
+}
+
+.btn-secondary {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  background: #e2e8f0;
+  color: var(--color-text);
+
+  &:hover {
+    background: #cbd5e1;
+  }
+}
+
+.btn-danger {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  background: #ef4444;
+  color: #fff;
+
+  &:hover {
+    background: #dc2626;
+  }
+}

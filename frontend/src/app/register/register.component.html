@@ -1,0 +1,57 @@
+<div class="auth-panel">
+  <h1>Rejestracja</h1>
+  <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        name="email"
+        [(ngModel)]="email"
+        placeholder="twoj@email.pl"
+      />
+      <div class="error-message" *ngIf="emailError">{{ emailError }}</div>
+    </div>
+    <div class="form-group">
+      <label for="username">Nazwa użytkownika</label>
+      <input
+        id="username"
+        type="text"
+        name="username"
+        [(ngModel)]="username"
+        placeholder="jan_kowalski"
+      />
+      <div class="error-message" *ngIf="usernameError">{{ usernameError }}</div>
+    </div>
+    <div class="form-group">
+      <label for="password">Hasło</label>
+      <input
+        id="password"
+        type="password"
+        name="password"
+        [(ngModel)]="password"
+        placeholder="••••••••"
+      />
+      <div class="error-message" *ngIf="passwordError">{{ passwordError }}</div>
+    </div>
+    <div class="form-group">
+      <label for="confirmPassword">Potwierdź hasło</label>
+      <input
+        id="confirmPassword"
+        type="password"
+        name="confirmPassword"
+        [(ngModel)]="confirmPassword"
+        placeholder="••••••••"
+      />
+      <div class="error-message" *ngIf="confirmPasswordError">{{ confirmPasswordError }}</div>
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="!registerForm.valid">
+      Zarejestruj się
+    </button>
+  </form>
+  <p class="auth-switch">
+    Masz już konto?
+    <a routerLink="/login">Zaloguj się</a>
+  </p>
+</div>

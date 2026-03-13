@@ -1,0 +1,8 @@
+<header class="navbar">
+  <a routerLink="/" class="logo"><img src="assets/logo.ico" alt="EAuctions" class="logo-image">EAuctions</a>
+  <div class="nav-actions">
+    <a *ngIf="!(isLoggedIn$ | async)" routerLink="/login" class="btn btn-primary" type="button">Zaloguj</a>
+    <a *ngIf="isLoggedIn$ | async" routerLink="/account" class="btn btn-secondary" type="button">Moje konto</a>
+    <a *ngIf="isLoggedIn$ | async" (click)="logout()" class="btn btn-primary" type="button">Wyloguj</a>
+  </div>
+</header>

@@ -1,0 +1,71 @@
+<!-- Modal: nowa aukcja -->
+<div class="modal-overlay" (click)="onCancel()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Dodaj nową aukcję</h2>
+      <button type="button" class="modal-close" (click)="onCancel()" aria-label="Zamknij">&times;</button>
+    </div>
+    <form (ngSubmit)="onSubmit(auctionForm)" #auctionForm="ngForm">
+      <div class="form-group">
+        <label for="modal-title">Tytuł aukcji</label>
+        <input
+          id="modal-title"
+          type="text"
+          name="title"
+          [(ngModel)]="newAuction.title"
+          required
+          placeholder="Np. Laptop Dell XPS 13"
+        />
+      </div>
+      <div class="form-group">
+        <label for="modal-description">Opis</label>
+        <textarea
+          id="modal-description"
+          name="description"
+          [(ngModel)]="newAuction.description"
+          rows="3"
+          placeholder="Krótki opis przedmiotu, stan, parametry..."
+        ></textarea>
+      </div>
+      <div class="form-group">
+        <label for="modal-startPrice">Cena wywoławcza (zł)</label>
+        <input
+          id="modal-startPrice"
+          type="number"
+          name="startPrice"
+          [(ngModel)]="newAuction.startPrice"
+          min="0"
+          step="0.01"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="modal-endDate">Data zakończenia</label>
+        <input
+          id="modal-endDate"
+          #endDateInput
+          type="datetime-local"
+          name="endDate"
+          [(ngModel)]="newAuction.endDate"
+          (ngModelChange)="onEndDateChange(endDateInput)"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="modal-photo">Zdjęcie produktu</label>
+        <input
+          id="modal-photo"
+          type="file"
+          name="photo"
+          accept="image/*"
+          (change)="newAuction.photo = $any($event.target).files[0]"
+        />
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Anuluj</button>
+        <button type="submit" class="btn btn-primary" [disabled]="!auctionForm.valid">Dodaj aukcję</button>
+      </div>
+    </form>
+  </div>
+</div>
+

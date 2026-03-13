@@ -1,0 +1,9 @@
+<div class="auth-panel account-panel">
+  <h1>Konto</h1>
+  <nav class="account-nav" align="center"> 
+    <a routerLink="/account/my-auctions" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }" class="account-nav-item">Moje aukcje</a>
+    <a routerLink="/account/won-auctions" routerLinkActive="active" class="account-nav-item">Wygrane aukcje</a>
+    <a routerLink="/account/details" routerLinkActive="active" class="account-nav-item">Moje konto</a>
+  </nav>
+  <router-outlet />
+</div>
