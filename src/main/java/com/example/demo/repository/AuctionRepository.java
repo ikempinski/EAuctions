@@ -15,5 +15,6 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     Optional<Auction> findByIdAndUserFk(Long id, Long userFk);
     List<Auction> findByIsActiveAndEndDateAfter(Long isActive, LocalDateTime endDate);
     List<Auction> findByIsActiveAndEndDateBefore(Long isActive, LocalDateTime endDate);
+    Optional<Auction> findTopByUserFkOrderByCreatedAtDesc(Long userFk);
 }
 

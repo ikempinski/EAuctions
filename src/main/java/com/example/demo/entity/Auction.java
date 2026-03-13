@@ -33,6 +33,9 @@ public class Auction {
     @Column(nullable = false)
     private String photoName;
 
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getTitle() { return title; }
@@ -49,4 +52,6 @@ public class Auction {
     public void setPhotoName(String photoName) { this.photoName = photoName; }
     public Long getIsActive() { return isActive; }
     public void setIsActive(Long isActive) { this.isActive = isActive; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

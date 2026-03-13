@@ -2,6 +2,7 @@ package com.example.demo.services;
 
 import com.example.demo.dto.Response.GuestAuctionResponse;
 import com.example.demo.dto.Response.MyAuctionResponse;
+import com.example.demo.dto.Response.WonAuctionResponse;
 import com.example.demo.entity.Auction;
 import com.example.demo.entity.AuctionWinners;
 import com.example.demo.entity.Bids;
@@ -82,10 +83,20 @@ public class AuctionService {
         auction.setTitle(title);
         auction.setDescription(description);
         auction.setIsActive(1L);
+        // rate‑limit: allow only one auction every 5 minutes per user
+        auctionRepository.findTopByUserFkOrderByCreatedAtDesc(authUser.getId())
+                .ifPresent(last -> {
+                    if (last.getCreatedAt() != null &&
+                            last.getCreatedAt().isAfter(LocalDateTime.now().minusMinutes(5))) {
+                        throw new IllegalStateException("Poczekaj 5 minut przed utworzeniem nowej aukcji");
+                    }
+                });
+
         auction.setStartPrice(new BigDecimal(startPrice));
         auction.setEndDate(LocalDateTime.parse(endDate));
         auction.setPhotoName(storedFileName);
         auction.setUserFk(authUser.getId());
+        auction.setCreatedAt(LocalDateTime.now());
 
         Auction saved = auctionRepository.save(auction);
         log.info("Created auction id={} with photo {}", saved.getId(), storedFileName);
@@ -104,10 +115,28 @@ public class AuctionService {
             throw new IllegalStateException("Unexpected authentication principal type");
         }
         AuthUserPrincipal authUser = (AuthUserPrincipal) principal;
-        List<Auction> auctions = auctionRepository.findByUserFkAndIsActive(authUser.getId(), 1L);
+        // include both active and finished auctions created by the current user
+        List<Auction> auctions = auctionRepository.findByUserFk(authUser.getId());
         return auctions.stream().map(a -> {
             BigDecimal currentBid = getCurrentBidForAuction(a);
             String highestBidder = getHighestBidderUsername(a);
+
+            AuctionWinners winner = auctionWinnersRepository.findByAuctionFk(a.getId())
+                    .orElse(null);
+            boolean finished = a.getIsActive() != null && a.getIsActive() == 0L;
+            String winnerUsername = null;
+            String winnerEmail = null;
+            BigDecimal finalPrice = null;
+            if (winner != null) {
+                finalPrice = winner.getBidAmount();
+                User winnerUser = userRepository.findById(winner.getUserFk())
+                        .orElse(null);
+                if (winnerUser != null) {
+                    winnerUsername = winnerUser.getUsername();
+                    winnerEmail = winnerUser.getEmail();
+                }
+            }
+
             return new MyAuctionResponse(
                     a.getId(),
                     a.getTitle(),
@@ -116,7 +145,12 @@ public class AuctionService {
                     currentBid,
                     a.getEndDate(),
                     a.getPhotoName(),
-                    highestBidder
+                    highestBidder,
+                    finished,
+                    a.getIsActive(),
+                    winnerUsername,
+                    winnerEmail,
+                    finalPrice
             );
         }).toList();
     }
@@ -148,16 +182,6 @@ public class AuctionService {
 
         auction.setIsActive(0L);
         auctionRepository.save(auction);
-
-        if (auction.getPhotoName() != null && !auction.getPhotoName().isBlank()) {
-            try {
-                Path filePath = uploadDir.resolve(auction.getPhotoName()).normalize();
-                Files.deleteIfExists(filePath);
-                log.info("Deleted photo file for auction {}: {}", id, filePath);
-            } catch (IOException e) {
-                log.warn("Failed to delete photo file for auction {}: {}", id, auction.getPhotoName(), e);
-            }
-        }
     }
 
     public List<GuestAuctionResponse> getActiveAuctionsForGuest() {
@@ -256,6 +280,36 @@ public class AuctionService {
         bidsRepository.save(bid);
 
         return bidAmount;
+    }
+
+    public List<WonAuctionResponse> getMyWonAuctions() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new IllegalStateException("User must be authenticated to view won auctions");
+        }
+
+        Object principal = authentication.getPrincipal();
+        if (!(principal instanceof AuthUserPrincipal)) {
+            throw new IllegalStateException("Unexpected authentication principal type");
+        }
+        AuthUserPrincipal authUser = (AuthUserPrincipal) principal;
+
+        List<AuctionWinners> winners = auctionWinnersRepository.findByUserFk(authUser.getId());
+        return winners.stream().map(w -> {
+            Auction auction = auctionRepository.findById(w.getAuctionFk())
+                    .orElse(null);
+            String title = auction != null ? auction.getTitle() : "Unknown auction";
+            LocalDateTime endDate = auction != null ? auction.getEndDate() : null;
+            String photoName = auction != null ? auction.getPhotoName() : null;
+            return new WonAuctionResponse(
+                    w.getAuctionFk(),
+                    title,
+                    w.getBidAmount(),
+                    endDate,
+                    photoName
+            );
+        }).toList();
     }
 
     /**

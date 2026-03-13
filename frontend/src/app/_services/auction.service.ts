@@ -67,4 +67,13 @@ export class AuctionService {
       .get<Auction[]>(`${environment.apiUrl}/auction/guest`)
       .pipe(take(1));
   }
+
+  getMyWonAuctions() {
+    return this.http
+      .get<{ auctionId: number; title: string; finalPrice: number; endDate: string; photoName?: string }[]>(
+        `${environment.apiUrl}/auction/won`,
+        { withCredentials: true }
+      )
+      .pipe(take(1));
+  }
 }

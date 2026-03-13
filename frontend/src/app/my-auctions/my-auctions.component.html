@@ -1,5 +1,21 @@
 <section class="account-section">
   <h2>Moje aukcje</h2>
+  <div class="account-nav">
+    <button
+      type="button"
+      class="account-nav-item"
+      [class.active]="statusFilter === 'active'"
+      (click)="setStatusFilter('active')">
+      Aktywne
+    </button>
+    <button
+      type="button"
+      class="account-nav-item"
+      [class.active]="statusFilter === 'finished'"
+      (click)="setStatusFilter('finished')">
+      Zakończone
+    </button>
+  </div>
   <div *ngIf="myAuctionsLoading" class="spinner-container">
     <span class="spinner-cog"></span>
   </div>
@@ -8,7 +24,7 @@
 
   <!-- Always render the list; spinner just overlays while loading -->
   <ul class="auction-list">
-    <li *ngFor="let a of myAuctions" class="auction-item">
+    <li *ngFor="let a of filteredAuctions" class="auction-item">
       <div class="auction-item-inner">
         <img
           *ngIf="a.photoName"
@@ -17,19 +33,35 @@
           [alt]="a.title"
         />
         <div class="auction-info">
-          <div class="auction-title"><strong>Tytuł:</strong> {{ a.title }}</div>
+          <div class="auction-title">
+            <strong>Tytuł:</strong> {{ a.title }}
+            <span *ngIf="a.finished" class="guest-own-label">Zakończone</span>
+          </div>
           <div class="auction-end-date"><strong>Zakończenie:</strong> {{ a.endDate | date: 'short' }}</div>
           <div class="auction-start-price"><strong>Cena wywoławcza:</strong> {{ a.startPrice }} zł</div>
-          <div class="auction-current-price">
+          <div class="auction-current-price" *ngIf="!a.finished">
             <strong>Aktualna cena:</strong> {{ getCurrentPrice(a) }} zł
           </div>
-          <div class="auction-highest-bidder">
+          <div class="auction-current-price" *ngIf="a.finished && a.finalPrice != null">
+            <strong>Cena końcowa:</strong> {{ a.finalPrice }} zł
+          </div>
+          <div class="auction-highest-bidder" *ngIf="!a.finished">
             <span
               *ngIf="a.currentBid != null && a.currentBid !== a.startPrice && a.highestBidderUsername">
               <strong>Najwyższa oferta od:</strong> {{ a.highestBidderUsername }}
             </span>
           </div>
-          <div class="auction-actions">
+          <div
+            class="auction-highest-bidder"
+            *ngIf="a.finished && a.finalPrice != null && a.winnerUsername && a.winnerEmail">
+            <strong>Wygrał:</strong> {{ a.winnerUsername }} ({{ a.winnerEmail }})
+          </div>
+          <div
+            class="auction-highest-bidder"
+            *ngIf="a.finished && a.finalPrice == null">
+            Nikt nie licytował
+          </div>
+          <div class="auction-actions" *ngIf="!a.finished">
             <button type="button" class="btn btn-danger" (click)="deleteAuction(a)">Usuń</button>
           </div>
         </div>
@@ -37,8 +69,10 @@
     </li>
   </ul>
 
-  <p class="account-placeholder" *ngIf="myAuctions.length === 0 && !myAuctionsLoading">
-    Brak aukcji. Dodaj pierwszą aukcję.
+  <p
+    class="account-placeholder"
+    *ngIf="filteredAuctions.length === 0 && !myAuctionsLoading">
+    Brak aukcji w tym widoku.
   </p>
   <button type="button" class="btn btn-primary" (click)="openAuctionModal()">Dodaj aukcję</button>
 </section>

@@ -1,7 +1,31 @@
 <section class="account-section">
   <h2>Wygrane aukcje</h2>
-  <p class="account-placeholder" *ngIf="!wonAuctions.length">Brak wygranych aukcji.</p>
+
+  <p class="account-placeholder" *ngIf="!wonAuctions.length">
+    Brak wygranych aukcji.
+  </p>
+
   <ul class="auction-list" *ngIf="wonAuctions.length">
-    <li *ngFor="let a of wonAuctions">{{ a.title }} – {{ a.finalPrice }} zł</li>
+    <li *ngFor="let a of wonAuctions" class="auction-item">
+      <div class="auction-item-inner">
+        <img
+          *ngIf="a.photoName"
+          class="auction-photo"
+          [src]="'/api/auction/photo/' + a.photoName"
+          [alt]="a.title"
+        />
+        <div class="auction-info">
+          <div class="auction-title">
+            <strong>Tytuł:</strong> {{ a.title }}
+          </div>
+          <div class="auction-current-price">
+            <strong>Cena końcowa:</strong> {{ a.finalPrice }} zł
+          </div>
+          <div class="info-message">
+            Poczekaj na informację od sprzedającego.
+          </div>
+        </div>
+      </div>
+    </li>
   </ul>
 </section>

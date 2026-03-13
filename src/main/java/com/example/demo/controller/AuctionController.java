@@ -29,7 +29,7 @@ public class AuctionController {
     private final AuctionService auctionService;
 
     @PostMapping("/create")
-    public ResponseEntity<Auction> createAuction(@RequestParam("title") String title,
+    public ResponseEntity<?> createAuction(@RequestParam("title") String title,
                                                  @RequestParam("description") String description,
                                                  @RequestParam("startPrice") String startPrice,
                                                  @RequestParam("endDate") String endDate,
@@ -37,6 +37,9 @@ public class AuctionController {
         try {
             Auction created = auctionService.createAuction(title, description, startPrice, endDate, photo);
             return ResponseEntity.ok(created);
+        } catch (IllegalStateException e) {
+            log.warn("Auction create blocked: {}", e.getMessage());
+            return ResponseEntity.status(400).body(e.getMessage());
         } catch (IllegalArgumentException e) {
             log.warn("Invalid auction create request: {}", e.getMessage());
             return ResponseEntity.badRequest().build();
@@ -65,6 +68,19 @@ public class AuctionController {
             return ResponseEntity.ok(auctionService.getActiveAuctionsForGuest());
         } catch (Exception e) {
             log.error("Failed to load guest auctions", e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/won")
+    public ResponseEntity<?> getMyWonAuctions() {
+        try {
+            return ResponseEntity.ok(auctionService.getMyWonAuctions());
+        } catch (IllegalStateException e) {
+            log.warn("Unauthorized access to won auctions: {}", e.getMessage());
+            return ResponseEntity.status(401).build();
+        } catch (Exception e) {
+            log.error("Failed to load won auctions", e);
             return ResponseEntity.internalServerError().build();
         }
     }

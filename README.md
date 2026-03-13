@@ -107,7 +107,16 @@ This project is designed as a clean, portfolio‑ready example of a transactiona
    spring.jpa.show-sql=true
    ```
 
-3. **Build & run**
+3. **Create uploads directory for photos**
+
+   Product photos are stored on disk and the `uploads/auctions` directory is ignored by Git.  
+   Make sure it exists before running the app:
+
+   ```bash
+   mkdir -p uploads/auctions   # PowerShell: New-Item -ItemType Directory -Force uploads/auctions
+   ```
+
+4. **Build & run**
 
    From the project root:
 

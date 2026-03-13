@@ -19,5 +19,10 @@ public class MyAuctionResponse {
     private LocalDateTime endDate;
     private String photoName;
     private String highestBidderUsername;
+    private Boolean finished;
+    private Long isActive;
+    private String winnerUsername;
+    private String winnerEmail;
+    private BigDecimal finalPrice;
 }
 
